@@ -53,6 +53,12 @@ mqttClient.on('message', (topic, message) => {
     });
 })
 
+io.on('publish', (topic, message) => {
+    if (pub_topic.includes(topic)) {
+        mqttClient.publish(topic, message);
+    }
+});
+
 server.listen(3001, () => {
     console.log("Server is running on http://localhost:3001");
 })

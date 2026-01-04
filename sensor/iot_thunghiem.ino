@@ -11,7 +11,10 @@
 // ===== WIFI & MQTT =====
 char ssid[] = "3 AE Sieu Nhan";
 char pass[] = "bat4gmadung";
-const char *mqtt_server = "broker.hivemq.com"; // Địa chỉ Broker
+const char *mqtt_server = "445b05884ac848a8a362ee7d69401698.s1.eu.hivemq.cloud";
+const int port = 8883;
+const char *user = "Admin1_iot";
+const char *pass = "Admin1_iot"
 
 // ===== PIN & CONFIG =====
 #define DHTPIN 4
@@ -26,8 +29,8 @@ const char *mqtt_server = "broker.hivemq.com"; // Địa chỉ Broker
 #define SERVO_FREQ 50
 #define SERVO_RES 16
 
-// ===== OBJECTS =====
-DHT dht(DHTPIN, DHTTYPE);
+    // ===== OBJECTS =====
+    DHT dht(DHTPIN, DHTTYPE);
 BlynkTimer timer;
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -85,7 +88,7 @@ void reconnect()
     Serial.print("Connecting MQTT...");
     // Tạo ID ngẫu nhiên để tránh trùng lặp
     String clientId = "ESP32Client-" + String(random(0xffff), HEX);
-    if (client.connect(clientId.c_str()))
+    if (client.connect(clientId.c_str(), user, pass))
     {
       Serial.println("Connected!");
       // Đăng ký nhận lệnh từ các topic này
@@ -168,7 +171,7 @@ void setup()
   Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
 
   // Cấu hình MQTT
-  client.setServer(mqtt_server, 1883);
+  client.setServer(mqtt_server, port);
   client.setCallback(callback);
 
   timer.setInterval(2000L, readSensor);
