@@ -6,26 +6,32 @@ const App = () => {
   const [temp, setTemp] = useState("--")
   const [humi, setHumi] = useState("--")
   const [gas, setGas] = useState("--")
-  const [status, setStatus] = useState("Đang kết nối...");
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
-    socket.on('connect', () => {
-      setStatus("Đã kết nối")
-      socket.on('mqttData', (data) => {
-        const { topic, value } = data;
-        if (topic === 'sensor/temp') {
-          setTemp(value);
-        } else if (topic === 'sensor/humi') {
-          setHumi(value);
-        } else if (topic === 'sensor/gas') {
-          setGas(value);
-        }
-      })
-    });
-    socket.on('disconnect', () => {
-      setStatus("Đang kết nối ...")
-    })
-  }, [socket])
+    // Lắng nghe kết nối
+    const onConnect = () => setStatus("Đã kết nối");
+    const onDisconnect = () => setStatus("Đang kết nối ...");
+
+    // Lắng nghe dữ liệu
+    const onMqttData = (data) => {
+      const { topic, value } = data;
+      if (topic === 'sensor/temp') setTemp(value);
+      else if (topic === 'sensor/humi') setHumi(value);
+      else if (topic === 'sensor/gas') setGas(value);
+    };
+
+    socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
+    socket.on('mqttData', onMqttData);
+
+    // HÀM CLEANUP:
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
+      socket.off('mqttData', onMqttData);
+    };
+  }, []);
 
   const publishMessage = (topic, message) => {
     socket.emit('publish', { topic, message });
