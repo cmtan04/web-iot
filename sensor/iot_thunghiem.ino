@@ -4,8 +4,8 @@
 #include <DHT.h>
 
 // ================== CẤU HÌNH WIFI & MQTT ==================
-const char *ssid = "3 AE Sieu Nhan";
-const char *pass = "bat4gmadung";
+const char *ssid = "tuantuantuan";
+const char *pass = "12345678";
 
 const char *mqtt_server = "445b05884ac848a8a362ee7d69401698.s1.eu.hivemq.cloud";
 const int port = 8883;
